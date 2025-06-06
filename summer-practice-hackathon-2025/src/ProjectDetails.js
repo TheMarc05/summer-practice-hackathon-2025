@@ -153,16 +153,16 @@ const ProjectDetails = ({ user }) => {
                     <strong>Aprobat la:</strong> {project.approvedAt?.toDate().toLocaleString()}
                   </p>
                   <p className="mb-1">
-                    <strong>Aprobat de:</strong> {project.approvedBy || "Necunoscut"}
+                    <strong>Aprobat de:</strong> Administrator
                   </p>
                 </div>
               )}
             </div>
           </div>
 
-          {isAdmin && (
+          {isAdmin && !project.approved && (
             <div className="mt-4">
-              <ApproveButton projectId={id} user={user} />
+              <ApproveButton projectId={id} user={user} onApproved={() => window.location.reload()} />
             </div>
           )}
 

@@ -28,12 +28,13 @@ function ProjectsList({ user }) {
   const refreshProjects = async () => {
     try {
       setLoading(true);
-      let constraints = [orderBy("createdAt", "desc")];
+      let constraints = [];
       if (filter === "approved") {
         constraints.push(where("approved", "==", true));
       } else if (filter === "pending") {
         constraints.push(where("approved", "==", false));
       }
+      // FĂRĂ orderBy("createdAt", "desc") pentru test index
       const projectsQuery = query(collection(db, "projects"), ...constraints);
       const querySnapshot = await getDocs(projectsQuery);
       const projectsList = querySnapshot.docs.map(doc => ({
@@ -51,6 +52,7 @@ function ProjectsList({ user }) {
 
   useEffect(() => {
     refreshProjects();
+    setSearchTerm(""); // Resetare search la schimbarea filtrului
     // eslint-disable-next-line
   }, [filter]);
 
@@ -97,8 +99,7 @@ function ProjectsList({ user }) {
   return (
     <div className="container mt-4">
       <div className="mb-3">
-        <strong>UID curent:</strong> {user?.uid || 'N/A'}<br />
-        <strong>Status admin:</strong> {isAdmin ? 'DA' : 'NU'}
+        <strong>Status:</strong> {isAdmin ? 'Administrator' : 'User'}
       </div>
       <div className="row mb-4">
         <div className="col-md-6">
