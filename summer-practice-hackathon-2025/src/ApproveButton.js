@@ -1,49 +1,66 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
 
-const ApproveButton = ({ projectId, user }) => {
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [approved, setApproved] = useState(false);
+function ApproveButton({ projectId, user, onApproved }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const adminUID = "KZd1JibJnEf0wHSqrPz8BrlLYX43";
-
-  useEffect(() => {
-    if (user.uid === adminUID) {
-      setIsAdmin(true);
-    }
-
-    const checkApproval = async () => {
-      const docRef = doc(db, "projects", projectId);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setApproved(docSnap.data().approved);
-      }
-    };
-
-    checkApproval();
-  }, [projectId, user]);
+  const isAdmin = user && user.uid === "CCksLUT4sbMB29C9vLmufH7osX23";
 
   const handleApprove = async () => {
-    await updateDoc(doc(db, "projects", projectId), {
-      approved: true,
-    });
-    setApproved(true);
+    if (!isAdmin) {
+      setError("Nu aveți permisiunea de a aproba proiecte.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const projectRef = doc(db, "projects", projectId);
+      await updateDoc(projectRef, {
+        approved: true,
+        approvedAt: serverTimestamp(),
+        approvedBy: user.uid
+      });
+      if (onApproved) onApproved();
+    } catch (err) {
+      console.error("Eroare la aprobarea proiectului:", err);
+      setError("Nu s-a putut aproba proiectul. Vă rugăm să încercați din nou.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (!isAdmin) return null;
+  if (!isAdmin) {
+    return null;
+  }
+
+  if (error) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        {error}
+      </div>
+    );
+  }
 
   return (
-    <div className="mt-3">
-      {approved ? (
-        <span className="badge bg-success">Approved</span>
+    <button
+      className="btn btn-success"
+      onClick={handleApprove}
+      disabled={loading}
+    >
+      {loading ? (
+        <>
+          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          Se aprobă...
+        </>
       ) : (
-        <button className="btn btn-success" onClick={handleApprove}>
-          Approve Project
-        </button>
+        "Aprobă"
       )}
-    </div>
+    </button>
   );
-};
+}
 
 export default ApproveButton;
