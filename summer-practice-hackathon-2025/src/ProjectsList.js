@@ -56,13 +56,10 @@ function ProjectsList({ user }) {
     // eslint-disable-next-line
   }, [filter]);
 
-  // Filtrare robustă pentru proiecte
-  const filteredProjects = projects.filter(project => {
-    const title = typeof project.title === 'string' ? project.title : '';
-    const description = typeof project.description === 'string' ? project.description : '';
-    return title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           description.toLowerCase().includes(searchTerm.toLowerCase());
-  });
+  // Filtrare robustă pentru proiecte și acces
+  const filteredProjects = isAdmin
+    ? projects
+    : projects.filter(project => project.userId === user.uid);
 
   if (loading) {
     return (
@@ -79,18 +76,6 @@ function ProjectsList({ user }) {
       <div className="container mt-5">
         <div className="alert alert-danger" role="alert">
           {error}
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="container mt-5">
-        <div className="alert alert-warning" role="alert">
-          Nu aveți permisiunea de a accesa această pagină. Doar administratorii pot vedea lista de proiecte.
-          <br />
-          <small>User ID: {user?.uid}</small>
         </div>
       </div>
     );
