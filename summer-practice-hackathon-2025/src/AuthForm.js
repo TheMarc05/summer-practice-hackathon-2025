@@ -48,7 +48,7 @@ export default function AuthForm() {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const isFirstUser = await checkIfFirstUser();
         
-        // Creăm documentul utilizatorului în Firestore
+        // creez documentul utilizatorului in Firestore Database
         await setDoc(doc(db, "users", userCredential.user.uid), {
           email: userCredential.user.email,
           role: isFirstUser ? "admin" : "user",
@@ -57,27 +57,27 @@ export default function AuthForm() {
         });
 
         if (isFirstUser) {
-          alert("Felicitări! Sunteți primul utilizator și ați fost setat ca administrator.");
+          alert("Felicitari! Sunteti primul utilizator si ati fost setat ca administrator.");
         }
       }
     } catch (err) {
-      let errorMessage = "A apărut o eroare. Vă rugăm să încercați din nou.";
+      let errorMessage = "A aparut o eroare. Va rugam sa incercati din nou.";
       
       switch (err.code) {
         case "auth/user-not-found":
-          errorMessage = "Nu există un cont cu această adresă de email.";
+          errorMessage = "Nu exista un cont cu aceasta adresa de email.";
           break;
         case "auth/wrong-password":
-          errorMessage = "Parola introdusă este incorectă.";
+          errorMessage = "Parola introdusa este incorecta.";
           break;
         case "auth/email-already-in-use":
-          errorMessage = "Această adresă de email este deja înregistrată.";
+          errorMessage = "Aceasta adresa de email este deja inregistrata.";
           break;
         case "auth/weak-password":
-          errorMessage = "Parola este prea slabă. Vă rugăm să folosiți o parolă mai puternică.";
+          errorMessage = "Parola este prea slaba. Va rugam sa folositi o parola mai puternica.";
           break;
         case "auth/invalid-email":
-          errorMessage = "Adresa de email nu este validă.";
+          errorMessage = "Adresa de email nu este valida.";
           break;
         default:
           console.error("Eroare de autentificare:", err);
@@ -145,12 +145,12 @@ export default function AuthForm() {
               Se procesează...
             </>
           ) : (
-            isLogin ? "Autentificare" : "Înregistrare"
+            isLogin ? "Autentificare" : "Inregistrare"
           )}
         </button>
 
         <p className="text-center mb-0">
-          {isLogin ? "Nu aveți cont?" : "Aveți deja cont?"}{" "}
+          {isLogin ? "Nu aveti cont?" : "Avti deja cont?"}{" "}
           <button
             type="button"
             className="btn btn-link p-0"
@@ -159,7 +159,7 @@ export default function AuthForm() {
               setError("");
             }}
           >
-            {isLogin ? "Înregistrați-vă" : "Autentificați-vă"}
+            {isLogin ? "Inregistrati-vs" : "Autentificati-va"}
           </button>
         </p>
       </form>

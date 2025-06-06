@@ -24,7 +24,7 @@ const UploadProject = ({ user }) => {
       return false;
     }
     if (!file && !manualContent.trim()) {
-      setError("Trebuie să încărcați un fișier sau să scrieți manual conținutul");
+      setError("Trebuie sa incarcati un fisier sau sa scrieti manual continutul");
       return false;
     }
     return true;
@@ -55,7 +55,7 @@ const UploadProject = ({ user }) => {
 
         setProjectId(docRef.id);
         setSuccess(true);
-        // Resetăm formularul după încărcare reușită
+        // resetez formularul dupa incarcarea reusita
         setTitle("");
         setDescription("");
         setFile(null);
@@ -70,7 +70,7 @@ const UploadProject = ({ user }) => {
           await saveToFirestore();
         };
         reader.onerror = () => {
-          setError("Eroare la citirea fișierului");
+          setError("Eroare la citirea fisierului");
           setLoading(false);
         };
         reader.readAsText(file);
@@ -80,8 +80,8 @@ const UploadProject = ({ user }) => {
         await saveToFirestore();
       }
     } catch (error) {
-      console.error("Eroare la încărcarea proiectului:", error);
-      setError("A apărut o eroare la încărcarea proiectului. Vă rugăm să încercați din nou.");
+      console.error("Eroare la incarcarea proiectului:", error);
+      setError("A aparut o eroare la incarcarea proiectului. Va rugam sa incercati din nou.");
     } finally {
       setLoading(false);
     }
@@ -93,7 +93,7 @@ const UploadProject = ({ user }) => {
         <div className="col-md-8">
           <div className="card shadow-sm">
             <div className="card-body">
-              <h2 className="card-title text-center mb-4">Încarcă Proiect</h2>
+              <h2 className="card-title text-center mb-4">Incarca Proiect</h2>
 
               {error && (
                 <div className="alert alert-danger" role="alert">
@@ -103,7 +103,7 @@ const UploadProject = ({ user }) => {
 
               {success && (
                 <div className="alert alert-success" role="alert">
-                  Proiectul a fost încărcat cu succes!
+                  Proiectul a fost incarcat cu succes!
                 </div>
               )}
 
@@ -112,7 +112,7 @@ const UploadProject = ({ user }) => {
                 <input
                   id="title"
                   className="form-control"
-                  placeholder="Introduceți titlul proiectului"
+                  placeholder="Introduceti titlul proiectului"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   disabled={loading}
@@ -124,7 +124,7 @@ const UploadProject = ({ user }) => {
                 <textarea
                   id="description"
                   className="form-control"
-                  placeholder="Introduceți descrierea proiectului"
+                  placeholder="Introduceti descrierea proiectului"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows="3"
@@ -133,7 +133,7 @@ const UploadProject = ({ user }) => {
               </div>
 
               <div className="mb-3">
-                <label className="form-label">Alege un fișier:</label>
+                <label className="form-label">Alege un fisier:</label>
                 <input
                   type="file"
                   accept=".js,.txt,.html,.css,.py,.java,.c,.cpp"
@@ -148,12 +148,12 @@ const UploadProject = ({ user }) => {
 
               <div className="mb-3">
                 <div className="form-text text-center mb-2">
-                  <strong>SAU</strong> scrie manual conținutul fișierului:
+                  <strong>SAU</strong> scrie manual continutul fisierului:
                 </div>
                 <textarea
                   className="form-control"
                   rows={8}
-                  placeholder="Introduceți conținutul fișierului"
+                  placeholder="Introduceti continutul fisierului"
                   value={manualContent}
                   onChange={(e) => setManualContent(e.target.value)}
                   disabled={loading}
@@ -172,7 +172,7 @@ const UploadProject = ({ user }) => {
                       Se încarcă...
                     </>
                   ) : (
-                    "Încarcă Proiect"
+                    "Incarca Proiect"
                   )}
                 </button>
               </div>

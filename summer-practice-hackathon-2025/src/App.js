@@ -40,7 +40,7 @@ function App() {
     return (
       <div className="container mt-5 text-center">
         <div className="spinner-border" role="status">
-          <span className="visually-hidden">Se încarcă...</span>
+          <span className="visually-hidden">Se incarca...</span>
         </div>
       </div>
     );
@@ -72,7 +72,7 @@ function App() {
                 <Link className="nav-link" to="/projects">Lista Proiectelor</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/upload">Încarcă Proiect</Link>
+                <Link className="nav-link" to="/upload">Incarca Proiect</Link>
               </li>
             </ul>
             <div className="d-flex align-items-center">

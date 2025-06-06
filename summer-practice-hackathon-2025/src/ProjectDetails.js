@@ -41,7 +41,7 @@ const ProjectDetails = ({ user }) => {
           setProject({ id: docSnap.id, ...docSnap.data() });
         }
       } catch (error) {
-        console.error("Eroare la încărcarea proiectului:", error);
+        console.error("Eroare la incasrcarea proiectului:", error);
       } finally {
         setLoading(false);
       }
@@ -113,7 +113,7 @@ const ProjectDetails = ({ user }) => {
               </div>
             )}
             {!project.fileContent && !project.code && !project.content && (
-              <div className="alert alert-info mb-0">Nu există conținut pentru acest proiect.</div>
+              <div className="alert alert-info mb-0">Nu exista continut pentru acest proiect.</div>
             )}
           </div>
 
@@ -121,18 +121,21 @@ const ProjectDetails = ({ user }) => {
             <h4>Detalii proiect</h4>
             <table className="table table-bordered table-sm">
               <tbody>
-                {Object.entries(project).map(([key, value]) => (
-                  <tr key={key}>
-                    <th style={{width: 150}}>{key}</th>
-                    <td>
-                      {typeof value === 'object' && value !== null && value.seconds
-                        ? new Date(value.seconds * 1000).toLocaleString()
-                        : typeof value === 'object' && value !== null
-                        ? JSON.stringify(value, null, 2)
-                        : value?.toString() || ''}
-                    </td>
-                  </tr>
-                ))}
+                {Object.entries(project)
+                  .filter(([key]) => key !== 'userId' && key !== 'id')
+                  .map(([key, value]) => (
+                    <tr key={key}>
+                      <th style={{width: 150}}>{key}</th>
+                      <td>
+                        {key === 'approvedBy' ? 'Administrator' :
+                          (typeof value === 'object' && value !== null && value.seconds
+                            ? new Date(value.seconds * 1000).toLocaleString()
+                            : typeof value === 'object' && value !== null
+                            ? JSON.stringify(value, null, 2)
+                            : value?.toString() || '')}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

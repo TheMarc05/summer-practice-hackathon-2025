@@ -10,7 +10,7 @@ function ApproveButton({ projectId, user, onApproved }) {
 
   const handleApprove = async () => {
     if (!isAdmin) {
-      setError("Nu aveți permisiunea de a aproba proiecte.");
+      setError("Nu aveti permisiunea de a aproba proiecte.");
       return;
     }
 
@@ -27,7 +27,7 @@ function ApproveButton({ projectId, user, onApproved }) {
       if (onApproved) onApproved();
     } catch (err) {
       console.error("Eroare la aprobarea proiectului:", err);
-      setError("Nu s-a putut aproba proiectul. Vă rugăm să încercați din nou.");
+      setError("Nu s-a putut aproba proiectul. Va rugam sa incercati din nou.");
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ function ApproveButton({ projectId, user, onApproved }) {
           Se aprobă...
         </>
       ) : (
-        "Aprobă"
+        "Aproba"
       )}
     </button>
   );
