@@ -3,8 +3,8 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
-// Configurația proiectului tău Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyB3uXj0wWqv7xdmxFwgw2gQd12-bRUJSSk",
   authDomain: "gitgud-7ae77.firebaseapp.com",
@@ -15,9 +15,8 @@ const firebaseConfig = {
   measurementId: "G-QHF2E36CFJ",
 };
 
-// Inițializează Firebase
 const app = initializeApp(firebaseConfig);
 
-// Exportă serviciile de care ai nevoie
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const storage = getStorage(app);

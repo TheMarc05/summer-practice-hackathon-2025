@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AuthForm from "./AuthForm";
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
+import UploadProject from "./UploadProject";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -14,9 +15,8 @@ function App() {
 
   return (
     <div>
-      <h1>Bine ai venit, {user.email}</h1>
       <button onClick={() => signOut(auth)}>Logout</button>
-      {/* aici vom adauga cod, auto-review etc. */}
+      <UploadProject user={user} />
     </div>
   );
 }
