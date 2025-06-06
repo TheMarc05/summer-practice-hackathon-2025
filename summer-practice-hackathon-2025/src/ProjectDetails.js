@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import CommentSection from "./CommentSection";
 import ApproveButton from "./ApproveButton";
 
@@ -9,7 +9,9 @@ const ProjectDetails = ({ user }) => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkAdminStatus = async () => {
@@ -38,7 +40,9 @@ const ProjectDetails = ({ user }) => {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          setProject({ id: docSnap.id, ...docSnap.data() });
+          const projectData = { id: docSnap.id, ...docSnap.data() };
+          setProject(projectData);
+          setIsOwner(user && projectData.userId === user.uid);
         }
       } catch (error) {
         console.error("Eroare la incasrcarea proiectului:", error);
@@ -48,7 +52,7 @@ const ProjectDetails = ({ user }) => {
     };
 
     fetchProject();
-  }, [id]);
+  }, [id, user]);
 
   if (loading) {
     return (
@@ -77,9 +81,19 @@ const ProjectDetails = ({ user }) => {
 
   return (
     <div className="container mt-4">
-      <Link to="/projects" className="btn btn-outline-primary mb-4">
-        ← Înapoi la Lista Proiectelor
-      </Link>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <Link to="/projects" className="btn btn-outline-primary">
+          ← Înapoi la Lista Proiectelor
+        </Link>
+        {isOwner && (
+          <button 
+            className="btn btn-primary"
+            onClick={() => navigate(`/project/${id}/edit`)}
+          >
+            Editează Proiect
+          </button>
+        )}
+      </div>
 
       <div className="card">
         <div className="card-body">

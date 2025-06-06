@@ -6,6 +6,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import UploadProject from "./UploadProject";
 import ProjectsList from "./ProjectsList";
 import ProjectDetails from "./ProjectDetails";
+import EditProject from "./EditProject";
 import "./App.css";
 
 function App() {
@@ -93,6 +94,7 @@ function App() {
         <Route path="/upload" element={<UploadProject user={user} />} />
         <Route path="/projects" element={<ProjectsList user={user} />} />
         <Route path="/project/:id" element={<ProjectDetails user={user} />} />
+        <Route path="/project/:id/edit" element={<EditProject user={user} />} />
         <Route path="*" element={<Navigate to="/projects" replace />} />
       </Routes>
     </div>
