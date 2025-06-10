@@ -10,49 +10,70 @@ const EditProject = ({ user }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(null); // null = necunoscut
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // Determină dacă userul este admin
   useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (!user) {
+        setIsAdmin(false);
+        return;
+      }
+      try {
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists() && userDoc.data().role === "admin") {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+      } catch (error) {
+        setIsAdmin(false);
+        console.error("Eroare la verificarea rolului de admin:", error);
+      }
+    };
+    checkAdminStatus();
+  }, [user]);
+
+  // Fetch proiect doar după ce știm dacă userul e admin
+  useEffect(() => {
+    if (isAdmin === null) return; // așteaptă determinarea rolului
     const fetchProject = async () => {
       try {
         const docRef = doc(db, "projects", id);
         const docSnap = await getDoc(docRef);
-
         if (docSnap.exists()) {
           const projectData = docSnap.data();
-          // Verificăm dacă utilizatorul este proprietarul proiectului
-          if (projectData.userId !== user.uid) {
-            setError("Nu aveți permisiunea de a edita acest proiect.");
+          // Verificăm dacă utilizatorul este proprietarul proiectului sau administrator
+          if (projectData.userId !== user.uid && !isAdmin) {
+            setError("Nu aveti permisiunea de a edita acest proiect.");
             return;
           }
           setTitle(projectData.title || "");
           setDescription(projectData.description || "");
           setFileContent(projectData.fileContent || "");
         } else {
-          setError("Proiectul nu a fost găsit.");
+          setError("Proiectul nu a fost gasit.");
         }
       } catch (error) {
-        console.error("Eroare la încărcarea proiectului:", error);
-        setError("A apărut o eroare la încărcarea proiectului.");
+        console.error("Eroare la incarcarea proiectului:", error);
+        setError("A aparut o eroare la încărcarea proiectului.");
       } finally {
         setLoading(false);
       }
     };
-
     fetchProject();
-  }, [id, user.uid]);
+  }, [id, user, isAdmin]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess(false);
-
     if (!title.trim() || !description.trim()) {
       setError("Titlul și descrierea sunt obligatorii.");
       return;
     }
-
     try {
       setLoading(true);
       const projectRef = doc(db, "projects", id);
@@ -60,7 +81,9 @@ const EditProject = ({ user }) => {
         title: title.trim(),
         description: description.trim(),
         fileContent: fileContent.trim(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        updatedBy: user.uid,
+        updatedByEmail: user.email
       });
       setSuccess(true);
       setTimeout(() => {
@@ -68,18 +91,18 @@ const EditProject = ({ user }) => {
       }, 2000);
     } catch (error) {
       console.error("Eroare la actualizarea proiectului:", error);
-      setError("A apărut o eroare la actualizarea proiectului.");
+      setError("A aparut o eroare la actualizarea proiectului.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) {
+  if (loading || isAdmin === null) {
     return (
       <div className="container mt-4">
         <div className="d-flex justify-content-center">
           <div className="spinner-border" role="status">
-            <span className="visually-hidden">Se încarcă...</span>
+            <span className="visually-hidden">Se incarca...</span>
           </div>
         </div>
       </div>
@@ -102,14 +125,14 @@ const EditProject = ({ user }) => {
         <div className="col-md-8">
           <div className="card shadow-sm">
             <div className="card-body">
-              <h2 className="card-title text-center mb-4">Editează Proiect</h2>
-
+              <h2 className="card-title text-center mb-4">
+                {isAdmin ? "Editeaza Proiect" : "Editeaza Proiect"}
+              </h2>
               {success && (
                 <div className="alert alert-success" role="alert">
-                  Proiectul a fost actualizat cu succes! Veți fi redirecționat...
+                  Proiectul a fost actualizat cu succes! Veti fi redirecționat...
                 </div>
               )}
-
               <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                   <label htmlFor="title" className="form-label">Titlu Proiect *</label>
@@ -122,7 +145,6 @@ const EditProject = ({ user }) => {
                     required
                   />
                 </div>
-
                 <div className="mb-3">
                   <label htmlFor="description" className="form-label">Descriere *</label>
                   <textarea
@@ -135,9 +157,8 @@ const EditProject = ({ user }) => {
                     required
                   />
                 </div>
-
                 <div className="mb-3">
-                  <label htmlFor="fileContent" className="form-label">Conținut Fișier</label>
+                  <label htmlFor="fileContent" className="form-label">Continut Fisier</label>
                   <textarea
                     id="fileContent"
                     className="form-control"
@@ -147,7 +168,6 @@ const EditProject = ({ user }) => {
                     disabled={loading}
                   />
                 </div>
-
                 <div className="d-grid gap-2">
                   <button 
                     type="submit" 
@@ -160,7 +180,7 @@ const EditProject = ({ user }) => {
                         Se salvează...
                       </>
                     ) : (
-                      "Salvează Modificările"
+                      "Salveaza Modificarile"
                     )}
                   </button>
                   <button 

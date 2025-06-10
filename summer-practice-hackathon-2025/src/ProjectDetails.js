@@ -85,12 +85,12 @@ const ProjectDetails = ({ user }) => {
         <Link to="/projects" className="btn btn-outline-primary">
           ← Înapoi la Lista Proiectelor
         </Link>
-        {isOwner && (
+        {(isOwner || isAdmin) && (
           <button 
             className="btn btn-primary"
             onClick={() => navigate(`/project/${id}/edit`)}
           >
-            Editează Proiect
+            {isAdmin ? "Editeaza Proiect" : "Editeaza Proiect"}
           </button>
         )}
       </div>
